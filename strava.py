@@ -33,13 +33,6 @@ class Strava:
 		self.strava_email = email
 		self.token = strava_auth_json['token']
 		print "Athlete: %s Token: %s" % (strava_auth_json['athlete']['name'],strava_auth_json['token'])
-		#{"token":"a848a1c2297513bcc96e","athlete":{"id":1489,"name":"Bassem Youssef",
-		# "agreed_to_terms":true,"super_user":false,"iphone_tester":false,
-		# "push_token":"5260f29c23fff7881a09468a5cc8ba503829756526110d8e6e333909755bd4e3",
-		#"default_settings":{"sample_rate":3,"continuous_gps":true,"accuracy":0,
-		#"distance_filter":3,"max_search_time":30,"min_stale_time":300,"min_accuracy":150,
-		#"map_threshold":25,"max_sync_time":60,"max_waypoint_stale_time":300,
-		#"update_ride_poll_interval":2}},"activity_data":[]}
 		return
 
 	def process_strava_json_data(self,urlf) :
@@ -48,7 +41,6 @@ class Strava:
 
 	def get_athlete(self,athlete_id):
 		# requires an authetication token
-		#Request http://www.strava.com/api/v2/athletes/19?token=72b31fc71294a31b5d1d
 		if athlete_id == None:
 			print "athlete id is required"
 			return
@@ -116,7 +108,6 @@ class Strava:
 		return
 
 	def get_club_id(self,club_id):
-		#example: http://www.strava.com/api/v1/clubs?name=mission
 		# really it's a search for a club id matching the passed string name
 		if club_id == None:
 			print "club name is required for getting the club"
@@ -213,38 +204,7 @@ class Strava:
 			offset = True
 		return offset
 	
-	def sort_segment_rider_freq(self,seg_freq_list) :
-		return(seg_freq_list[1])
-
-	# XXX this should not be part of the class
-	def get_Duke_of_Mountain(self,segment_id) :
-		effort_offset = 0
-		segment_freq_dict = {}
-		efforts_data = self.get_segment_efforts(segment_id)
-		#  go through and iterrate over the segment efforts
-		# Strava returns 50 ride efforts at a time
-		while self.process_efforts_segment_frequency(efforts_data,segment_freq_dict):
-			# call get efforts repeatedly
-			effort_offset += 50
-			efforts_data = {} # clear it
-			print "offset is now %d" % effort_offset
-			efforts_data = self.get_segment_efforts(segment_id,offset = effort_offset)
-		print "For Segment id: %d Total: %d" % (segment_id,len(segment_freq_dict))
-		for username in segment_freq_dict.keys() :
-			print "Athlete username: %s Num ridden: %d" % (username,segment_freq_dict[username])
-        	sort_freq_ride_list = sorted(segment_freq_dict.items(),reverse=True,key=self.sort_segment_rider_freq)
-		
-		print "\n---- Top 20 Sorted -----"
-		for rider in sort_freq_ride_list[:20] :
-			print "Athlete username: %s Num ridden: %d" % (rider[0],rider[1])
-
 	def get_ride(self,ride_id):
-		# http://www.strava.com/api/v2/rides/448459
-		#Response
-		# {"id":"448459","ride":{"id":448459,"name":"southern city loop","start_date_local":"2011-04-19T08:16:56Z",
-		# "elapsed_time":5007,"moving_time":4787,"distance":33224.7,"average_speed":6.940609985377062,"elevation_gain":269.6,
-		# "location":"San Francisco, CA","start_latlng":[37.77410821057856,-122.43948784656823],
-		# "end_latlng":[37.782084261998534,-122.40578069351614]},"version":"1303236084"}
 		if ride_id == None:
 			print "Ride ID is required for effort query"
 			return
@@ -359,7 +319,7 @@ class Strava:
 		print rides
 		return rides
 	
-	# XXX doesn't seem to work right now
+	# XXX this API doesn't seem to work right now
 	def search_segment(self,segment_name,offset = None):
 		if segment_name == None:
 			print "segment name is required for segment search"
@@ -391,7 +351,6 @@ class Strava:
 
 	# test v3 api
 	def search_segments_by_latlng(self,start_latlng,end_latlng,zoom=13,min_cat=0,max_cat=5,activity='cycling'):
-		#v3/segments/search?bounds=38.34798,-123.10960,38.38975,-123.01003&zoom=13&min_cat=0&max_cat=5&activity_type=cycling
 		if start_latlng == None:
 			print "starting latlng required"
 			return
@@ -410,49 +369,7 @@ class Strava:
 		return segments
  
 def main():
-	s = Strava(token='528168cb9b30a8140c05')
-	# XXX change that later, could be passed in
-#	if s.token != None:
-#		s.strava_auth('byoussef+strava@gmail.com','basgra')
-	
-	# will use something a lot less popular for now
-	#segment_id = 229781 # will query for that or better yet use a map 
-	segment_id = 825395 # will query for that or better yet use a map 
-	#segment_id = 640767# will query for that or better yet use a map 
-	#s.get_Duke_of_Mountain(segment_id)
-
-#	print "Test ride effort for a segment data api"
-#	s.get_ride_effort_for_segment(16581733,305803985)
-
-#	s.get_club_id("forums")
-#	s.get_club_members(97)
-	#s.get_effort_info(617529)
-#	s.get_ride_efforts(16581733)
-#	s.search_ride(athlete_id = 1489)
-#	s.get_ride_extended_info(16581733)
-#	s.search_segment("saratoga")
-#	s.get_segment_info(825395)
-#	s.get_ride_map_details(16581733,100)
-#	s.get_athlete(1489)
-
-#	s.get_all_bikes(1489)
-#	s.get_bike_details(1489,205477)
-		#v3/segments/search?bounds=38.34798,-123.10960,38.38975,-123.01003&zoom=13&min_cat=0&max_cat=5&activity_type=cycling
-	s.search_segments_by_latlng([38.34798,-123.10960],[38.38975,-123.01003],13,0,5,'cycling')
+	return
 
 if __name__ == '__main__':
 	main()
-
-#
-#uf = urllib.urlopen("http://www.strava.com/api/v1/segments/229781")
-#uf.read()
-#'{"segment":{"id":229781,"name":"Hawk Hill","distance":2684.82,"elevationGain":155.733,"elevationHigh":245.273,"elevationLow":92.424,"averageGrade":5.69309,"climbCategory":"4"}}'
-#uf = urllib.urlopen("http://www.strava.com/api/v1/segments/229781")
-#raw_data = uf.read()
-#raw_data
-#'{"segment":{"id":229781,"name":"Hawk Hill","distance":2684.82,"elevationGain":155.733,"elevationHigh":245.273,"elevationLow":92.424,"averageGrade":5.69309,"climbCategory":"4"}}'
-#json_data_en = json.loads(raw_data)
-#json_data_en
-#{u'segment': {u'distance': 2684.82, u'elevationHigh': 245.273, u'name': u'Hawk Hill', u'averageGrade': 5.69309, u'climbCategory': u'4', u'id': 229781, u'elevationLow': 92.424, u'elevationGain': 155.733}}
-#
-#	 
