@@ -180,30 +180,9 @@ class Strava:
 		if offset:
 			effort_api_url += "?offset=%d" % offset
 		# going to start getting into a loop that uses start date over and over in order to build the table
-		print effort_api_url
+		#print effort_api_url
 		return self.process_strava_json_data(self.call_api(effort_api_url))
 
-	def process_efforts_segment_frequency(self,efforts_data,segment_freq_dict) :
-		# we have the json'ed data from strava, now populate our dictionary
-		# in this particular case we're only looking for the segment and how many times it's been ridden
-		# by users
-		offset = False
-		num_effs = 0
-		for ef in efforts_data['efforts']:
-			num_effs += 1
-			if ef['athlete']['username'] not in segment_freq_dict:
-				segment_freq_dict[ef['athlete']['username']] = 1
-			else:
-				segment_freq_dict[ef['athlete']['username']] += 1
-		# needs to get sorted by number of times ridden
-		# ef will contain last effort so let's get it's date/time
-		# max efforts returned is 50, so we might need to grab the next 50
-		print "Num efforts is %d" % num_effs
-		if num_effs == 50:
-			print "Num efforts max of 50"
-			offset = True
-		return offset
-	
 	def get_ride(self,ride_id):
 		if ride_id == None:
 			print "Ride ID is required for effort query"
@@ -358,14 +337,14 @@ class Strava:
 			print "end latlng required"
 			return
 		# start constructing the api url
-		api_ver = 3 # this api is using v1 api
+		api_ver = 3 # this api is using v3 api
 		segment_api_url = self.api_url + "v%d/segments/search?bounds=%f,%f," % (api_ver,start_latlng[0],start_latlng[1])
 		segment_api_url += "%f,%f&zoom=%d&" % (end_latlng[0],end_latlng[1],zoom)
 		segment_api_url += "min_cat=%d&max_cat=%d&activity_type=%s" % (min_cat,max_cat,activity)
 		# going to start getting into a loop that uses start date over and over in order to build the table
 		print segment_api_url
 		segments =  self.process_strava_json_data(self.call_api(segment_api_url))
-		print segments
+		#print segments
 		return segments
  
 def main():
